@@ -44,18 +44,7 @@ impl Shrimp {
 
     pub fn handle_input(&mut self, event: &Event<()>) -> Result<(), Box<dyn Error>> {
         match event {
-            Event::WindowEvent {event, .. } => {
-                match event {
-                    WindowEvent::KeyboardInput { input, .. } => self.input.key_event(input),
-                    WindowEvent::CursorMoved { .. } => {            
-                        Ok(())
-                    }
-                    WindowEvent::Destroyed => {
-                        Err("Window was destroyed".into())
-                    },
-                    _ => Ok(()),
-                }
-            }
+            Event::WindowEvent {event: WindowEvent::KeyboardInput { input, ..}, .. } => self.input.key_event(input),
             Event::DeviceEvent {event, ..} => self.input.device_event(event),
             _ => Ok(()),
         }
