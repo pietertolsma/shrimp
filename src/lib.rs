@@ -1,5 +1,5 @@
 mod rendering;
-
-pub fn hello() {
-    rendering::hello2();
-}
+mod ui;
+mod input;
+mod core;
+pub mod shrimp;
