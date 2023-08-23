@@ -20,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .with_inner_size(size)
                     .with_min_inner_size(size)
                     .build(&event_loop).unwrap();
-    let shrimp: Shrimp = Shrimp::new(1280, 720, &window)?;
+    let shrimp: Shrimp = Shrimp::new( &window)?;
 
     game_loop(
         event_loop,
