@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         240,
         0.1,
         |g, | {
-            g.game.update();
+            g.game.update(&g.window);
         },
         |g| {
             match g.game.render() {
@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         },
         |g, event| {
-            match g.game.handle_input(event, &g.window) {
+            match g.game.handle_input(event) {
                 Ok(_) => (),
                 Err(e) => panic!("Error handling input: {}", e),
             }

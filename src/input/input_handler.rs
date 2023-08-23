@@ -5,7 +5,7 @@ use winit::event::{KeyboardInput, DeviceEvent};
 use super::input_state::InputState;
 
 pub struct InputHandler {
-    input_state: InputState
+    pub input_state: InputState
 }
 
 impl InputHandler {
