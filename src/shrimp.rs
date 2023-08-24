@@ -1,13 +1,14 @@
 use std::error::Error;
 
 use pixels::{Pixels, SurfaceTexture};
-use winit::{event::{Event, WindowEvent}, window::{Window, CursorGrabMode}};
+use winit::{event::{Event, WindowEvent}, window::Window};
 
-use crate::{input::InputHandler, core::{World, Camera}};
+use crate::{input::InputHandler, core::{World, Camera}, ui::UserInterface};
 
 pub struct Shrimp {
     pub world: World,
     pub camera: Camera,
+    pub ui: UserInterface,
     pub pixels: Pixels,
     pub input: InputHandler,
 }
@@ -16,9 +17,11 @@ impl Shrimp {
     pub fn new(window: &Window) -> Result<Self, Box<dyn Error>>{
         let width = window.inner_size().width;
         let height = window.inner_size().height;
+        // center mouse
         Ok(Self {
             world: World::default(),
-            camera: Camera::new((width, height)),
+            camera: Camera::new(45.0,(width, height)),
+            ui: UserInterface::new(),
             pixels: Pixels::new(width, height, SurfaceTexture::new(width, height, &window))?,
             input: InputHandler::default(),
         })
@@ -34,12 +37,8 @@ impl Shrimp {
     }
 
     pub fn update(&mut self, window: &Window){
-        // Game tick
-        // Example: move player based on wasd and mouse input
-
-        let mouse_locked = self.input.input_state.is_key_toggled(&winit::event::VirtualKeyCode::Escape);
-        window.set_cursor_visible(mouse_locked);
-        window.set_cursor_grab([CursorGrabMode::Locked, CursorGrabMode::None][mouse_locked as usize]).unwrap();
+        self.camera.update(&mut self.input.input_state);
+        self.ui.update(window, &self.input.input_state);
     }
 
     pub fn handle_input(&mut self, event: &Event<()>) -> Result<(), Box<dyn Error>> {

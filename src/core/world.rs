@@ -1,5 +1,7 @@
 use super::Camera;
 
+use rayon::prelude::*;
+
 pub struct World {
 }
 
@@ -15,13 +17,20 @@ impl World {
     }
 
     pub fn render(&mut self, frame: &mut [u8], camera: &Camera) {
-        for (i, pixel) in frame.chunks_exact_mut(4).enumerate() {
-            let x = i % camera.dimensions.0 as usize;
-            let y = i / camera.dimensions.0 as usize;
-            let red = (x as f32 / camera.dimensions.0 as f32 * 255.0) as u8;
-            let green = (y as f32 / camera.dimensions.1 as f32 * 255.0) as u8;
-            pixel.copy_from_slice(&[red, green, 0, 255]);
-        }
+        let world_coords = &camera.world_coords();
+
+        // loop using rayon
+        frame.par_chunks_exact_mut(4).enumerate().for_each(|(i, pixel)| {
+            let mut color: [u8; 4] = [255, 255, 255, 255];
+
+            if world_coords[(i, 1)] < 0.0 {
+                color = [0, 0, 0, 255];
+            } else if world_coords[(i, 0)] <= 0.0 {
+                color = [255, 0, 0, 255];
+            }
+
+            pixel.copy_from_slice(&color);
+        });
     }
 }
 
